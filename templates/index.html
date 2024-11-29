@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue Management</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+    <h1>Welcome to the Queue Management System</h1>
+    <form action="/register" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="purpose">Purpose:</label>
+        <input type="text" id="purpose" name="purpose" required>
+        <br>
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Queue List</h2>
+    {% if queue %}
+        <ul>
+            {% for user in queue %}
+                <li>
+                    ID: {{ user['id'] }}, Name: {{ user['name'] }}, Purpose: {{ user['purpose'] }}, Admission: {{ user['admission'] }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No one is in the queue yet.</p>
+    {% endif %}
+</body>
+</html>

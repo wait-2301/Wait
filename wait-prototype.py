@@ -1,43 +1,36 @@
-# import psycopg2 
- 
-# connection = psycopg2.connection ( 
-#     dbname = "fffhfdjfhdhdhd", 
-#     user = "postgres", 
-#     password = "", 
-#     host = "localhost", 
-#     port = "5432" 
-# ) 
- 
-# cursor = connection.cursor() 
- 
-# cursor.execute("SELECT first_name || last_name FROM employees WHERE salary BETWEEN 60000 AND 70000 AND hire_date > '2022-01-01'") 
-  
 import telebot
-from telebot import types
+import psycopg2
 from threading import Timer
-import time
+import os
+from dotenv import load_dotenv
+import services.QueueService as qm
 
-bot = telebot.TeleBot('7619704061:AAE4SCDk52PWdBNiGNbqpzbAeZEb6B4GD4k')
 
-# Data Structures
-queue = []  # List of users in the queue
-queue_status = {}  # Details about each user
-current_applicant = None  # Currently being served
+load_dotenv()
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
+db_conn = psycopg2.connect(
+    dbname='wait',
+    user='postgres',
+    password='qwerty',   # "1234" or "qwerty"
+    host='localhost',
+    port='5432'
+)
+db_conn.autocommit = True
+
+# bot = telebot.TeleBot('7610327249:AAHFW8oNcFzu2HCuz5zH2Kcj0Xl0G00_8Ms')
+bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+
+current_applicant = None
 applicant_timer = None
+DEFAULT_TIMER_SECONDS = 120
 
-# Admin/Manager Data
-admin_id = 1167373997  # initial admin
-managers = set([admin_id])  # Set of manager IDs
-
-# Constants
-DEFAULT_TIMER_SECONDS = 120  # 2 minutes for the applicant to show up
-
-# Utility Functions
 def is_manager(user_id):
-    """Checks if a user is a manager or admin."""
-    return user_id in managers
+    print("USER COUNT BY ", user_id, " = ", qm.get_managers_count_by_user_id_service(user_id))
+    count = qm.get_managers_count_by_user_id_service(user_id)
 
-# Command Handlers
+    return count > 0
+
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(
@@ -46,9 +39,9 @@ def start(message):
         "Доступные команды:\n"
         "/register - Зарегистрироваться в очереди\n"
         "/status - Проверить статус очереди\n"
+        "/leave - Покинуть очередь\n"
         "/help - Помощь"
     )
-
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
@@ -71,117 +64,62 @@ def help_command(message):
         )
     bot.send_message(message.chat.id, help_text)
 
-
 @bot.message_handler(commands=['register'])
 def register(message):
-    
     bot.send_message(message.chat.id, "Пожалуйста, введите своё имя:")
     bot.register_next_step_handler(message, get_registration_name)
 
-
 def get_registration_name(message):
-    
     user_id = message.chat.id
     user_name = message.text
 
-    if user_id in queue_status:
+    users_count = qm.get_queue_count_by_user_id_service(user_id)
+    if users_count > 0:
         bot.send_message(user_id, "Вы уже зарегистрированы в очереди! ✅")
     else:
-        queue_status[user_id] = {"name": user_name}
         bot.send_message(user_id, "Укажите номер кабинета или место:")
-        bot.register_next_step_handler(message, get_registration_details)
+        bot.register_next_step_handler(message, lambda msg: get_registration_details(msg, user_name))
 
 
-def get_registration_details(message):
-
+def get_registration_details(message, user_name):
     user_id = message.chat.id
-    queue_status[user_id]["room"] = message.text
-
+    room = message.text
     bot.send_message(user_id, "Укажите цель визита:")
-    bot.register_next_step_handler(message, finalize_registration)
+    bot.register_next_step_handler(message, lambda msg: finalize_registration(msg, user_name, room))
 
-
-def finalize_registration(message):
-
+def finalize_registration(message, user_name, room):
     user_id = message.chat.id
-    user_purpose = message.text
+    purpose = message.text
 
-    queue_status[user_id]["purpose"] = user_purpose
-    queue.append(user_id)
-    queue_status[user_id]["position"] = len(queue)
+    position = qm.get_next_position_service()
+    qm.insert_into_queue_service(user_id, user_name, room, purpose, position)
+
     bot.send_message(
         user_id,
         f"Вы успешно зарегистрированы!\n"
-        f"Ваш номер: {queue_status[user_id]['position']}\n"
-        f"Имя: {queue_status[user_id]['name']}\n"
-        f"Кабинет: {queue_status[user_id]['room']}\n"
-        f"Цель: {queue_status[user_id]['purpose']}"
+        f"Ваш номер: {position}\n"
+        f"Имя: {user_name}\n"
+        f"Кабинет: {room}\n"
+        f"Цель: {purpose}"
     )
-
 
 @bot.message_handler(commands=['status'])
 def status(message):
     user_id = message.chat.id
-    if user_id in queue_status:
-        position = queue_status[user_id]['position']
-        bot.send_message(user_id, f"Ваш текущий номер в очереди: {position}")
+    result = qm.get_user_position_service(user_id)
+
+    if result:
+        bot.send_message(user_id, f"Ваш текущий номер в очереди: {result[0]}")
     else:
         bot.send_message(user_id, "Вы не зарегистрированы в очереди. Используйте /register.")
 
 
+
 @bot.message_handler(commands=['leave'])
 def leave_queue(message):
-
     user_id = message.chat.id
-    if user_id in queue_status:
-        queue.remove(user_id)
-        del queue_status[user_id]
-        update_queue_positions()
-        bot.send_message(user_id, "Вы успешно покинули очередь.")
-    else:
-        bot.send_message(user_id, "Вы не зарегистрированы в очереди.")
-
-
-@bot.message_handler(commands=['add_manager'])
-def add_manager(message):
-    if message.chat.id != admin_id:
-        bot.send_message(message.chat.id, "Вы не имеете доступа к этой команде.")
-        return
-
-    bot.send_message(message.chat.id, "Укажите ID нового менеджера:")
-    bot.register_next_step_handler(message, add_manager_handler)
-
-
-def add_manager_handler(message):
-    try:
-        new_manager_id = int(message.text)
-        managers.add(new_manager_id)
-        bot.send_message(message.chat.id, f"Пользователь с ID {new_manager_id} добавлен как менеджер.")
-    except ValueError:
-        bot.send_message(message.chat.id, "Неверный ID.")
-
-
-@bot.message_handler(commands=['remove_manager'])
-def remove_manager(message):
-    if message.chat.id != admin_id:
-        bot.send_message(message.chat.id, "Вы не имеете доступа к этой команде.")
-        return
-
-    bot.send_message(message.chat.id, "Укажите ID менеджера для удаления:")
-    bot.register_next_step_handler(message, remove_manager_handler)
-
-
-def remove_manager_handler(message):
-    try:
-        manager_id = int(message.text)
-        if manager_id in managers:
-            managers.remove(manager_id)
-            bot.send_message(message.chat.id, f"Пользователь с ID {manager_id} удалён из списка менеджеров.")
-        else:
-            bot.send_message(message.chat.id, "Этот пользователь не является менеджером.")
-    except ValueError:
-        bot.send_message(message.chat.id, "Неверный ID.")
-
+    qm.delete_user_from_queue_service(user_id)
+    bot.send_message(user_id, "Вы успешно покинули очередь.")
 
 @bot.message_handler(commands=['queue_list'])
 def queue_list(message):
@@ -189,18 +127,8 @@ def queue_list(message):
         bot.send_message(message.chat.id, "Вы не имеете доступа к этой команде.")
         return
 
-    if not queue:
-        bot.send_message(message.chat.id, "Очередь пуста.")
-        return
-
-    queue_details = "Очередь:\n"
-    for idx, user_id in enumerate(queue, start=1):
-        user_data = queue_status[user_id]
-        queue_details += (
-            f"{idx}. Имя: {user_data['name']}, Кабинет: {user_data['room']}, "
-            f"Цель: {user_data['purpose']}, ID: {user_id}\n"
-        )
-    bot.send_message(message.chat.id, queue_details)
+    queue = qm.get_all_queue_entries_service()
+    bot.send_message(message.chat.id, queue)
 
 
 @bot.message_handler(commands=['call_next'])
@@ -210,20 +138,21 @@ def call_next(message):
     if applicant_timer:
         applicant_timer.cancel()
 
-    if queue:
-        current_applicant = queue.pop(0)
-        user_data = queue_status.pop(current_applicant)
-        bot.send_message(current_applicant, "Ваш черёд! Подойдите, пожалуйста.")
-        bot.send_message(
-            message.chat.id,
-            f"Вызван {user_data['name']}. У него 2 минуты, чтобы подойти."
-        )
-        # Start the timer
-        applicant_timer = Timer(DEFAULT_TIMER_SECONDS, move_queue_due_to_no_show)
-        applicant_timer.start()
-    else:
-        bot.send_message(message.chat.id, "Очередь пуста.")
-
+    with db_conn.cursor() as cur:
+        cur.execute("SELECT * FROM queue ORDER BY position LIMIT 1")
+        applicant = cur.fetchone()
+        if applicant:
+            current_applicant = applicant[1]  # user_id
+            cur.execute("DELETE FROM queue WHERE id = %s", (applicant[0],))
+            bot.send_message(current_applicant, "Ваш черёд! Подойдите, пожалуйста.")
+            bot.send_message(
+                message.chat.id,
+                f"Вызван {applicant[2]}. У него 2 минуты, чтобы подойти."
+            )
+            applicant_timer = Timer(DEFAULT_TIMER_SECONDS, move_queue_due_to_no_show)
+            applicant_timer.start()
+        else:
+            bot.send_message(message.chat.id, "Очередь пуста.")
 
 @bot.message_handler(commands=['end_conversation'])
 def end_conversation(message):
@@ -233,10 +162,12 @@ def end_conversation(message):
         bot.send_message(current_applicant, "Ваше время завершено. Спасибо!")
         current_applicant = None
 
-    if applicant_timer:
-        applicant_timer.cancel()
+        if applicant_timer:
+            applicant_timer.cancel()
 
-    bot.send_message(message.chat.id, "Конец разговора. Готов к следующему вызову.")
+        bot.send_message(message.chat.id, "Конец разговора. Готов к следующему вызову.")
+    else:
+        bot.send_message(message.chat.id, "Нет активного разговора.")
 
 
 @bot.message_handler(commands=['no_show'])
@@ -250,22 +181,58 @@ def no_show(message):
     if applicant_timer:
         applicant_timer.cancel()
 
-    bot.send_message(message.chat.id, "Человек помечен как неявившийся. Вызывается следующий.")
     call_next(message)
 
+@bot.message_handler(commands=['add_manager'])
+def add_manager(message):
+    if not is_manager(message.chat.id):
+        bot.send_message(message.chat.id, "Вы не имеете доступа к этой команде.")
+        return
+
+    bot.send_message(message.chat.id, "Укажите ID нового менеджера:")
+    bot.register_next_step_handler(message, add_manager_handler)
+
+
+def add_manager_handler(message):
+    try:
+        new_manager_id = int(message.text)
+        with db_conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO managers (user_id) 
+                VALUES (%s) 
+                ON CONFLICT (user_id) DO NOTHING
+            """, (new_manager_id,))
+
+        bot.send_message(message.chat.id, f"Пользователь с ID {new_manager_id} добавлен как менеджер.")
+    except ValueError:
+        bot.send_message(message.chat.id, "Неверный ID.")
+
+@bot.message_handler(commands=['remove_manager'])
+def remove_manager(message):
+    if not is_manager(message.chat.id):
+        bot.send_message(message.chat.id, "Вы не имеете доступа к этой команде.")
+        return
+
+    bot.send_message(message.chat.id, "Укажите ID менеджера для удаления:")
+    bot.register_next_step_handler(message, remove_manager_handler)
+
+
+
+
+def remove_manager_handler(message):
+    try:
+        manager_id = int(message.text)
+        with db_conn.cursor() as cur:
+            cur.execute("DELETE FROM managers WHERE user_id = %s", (manager_id,))
+        bot.send_message(message.chat.id, f"Пользователь с ID {manager_id} удалён из списка менеджеров.")
+    except ValueError:
+        bot.send_message(message.chat.id, "Неверный ID.")
 
 def move_queue_due_to_no_show():
     global current_applicant
     if current_applicant:
         bot.send_message(current_applicant, "Вы не подошли вовремя. Очередь движется дальше.")
         current_applicant = None
-
-
-def update_queue_positions():
-    for idx, user_id in enumerate(queue):
-        queue_status[user_id]['position'] = idx + 1
-
-
 
 if __name__ == "__main__":
     bot.polling(none_stop=True, interval=0)
