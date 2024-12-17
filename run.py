@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from datetime import datetime
+import services.queue_service as queue_service
 
 app = Flask(__name__)
 
@@ -27,6 +28,12 @@ def register():
                 queue[-1]['admission'] = admission
                 break
     return redirect(url_for('index'))
+
+@app.route('/queue', methods=['GET'])
+def get_all_queue():
+    queue_data = queue_service.get_all_queue_service()
+    serialized_queues = [queue.to_dict() for queue in queue_data]
+    return jsonify(serialized_queues)
 
 
 if __name__ == "__main__":

@@ -1,13 +1,6 @@
-import psycopg2
+from app.db_connect import db_conn
 
 
-db_conn = psycopg2.connect(
-    dbname='wait',
-    user='postgres',
-    password='qwerty',   # "1234" or "qwerty"
-    host='localhost',
-    port='5432'
-)
 
 cur = db_conn.cursor()
 
