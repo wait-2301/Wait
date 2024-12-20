@@ -5,8 +5,8 @@ from controllers.auth import auth
 from controllers.managment import management
 from controllers.talon import talon
 from controllers.profile import profile
+
 import os
-import threading
 
 
 app = Flask(__name__)
@@ -38,10 +38,6 @@ def phone_format(phone):
     else:
         return phone  
 
-# import subprocess
-
-# # Run the wait-prototype.py script
-# subprocess.Popen(['python', 'wait-prototype.py'])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

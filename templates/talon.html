@@ -233,7 +233,10 @@
     </div>
 
     <!-- Кнопка "На главную" -->
-    <button class="main-button">На главную</button>
+    <a href="/" class="main-button">
+        <button>На главную</button>
+      </a>
+      
     <img src="/static/wait33.png" alt="Логотип" class="logo">
 
     <!-- Скрипт -->
@@ -265,7 +268,7 @@
             currentStatus = currentStatus < 3 ? currentStatus + 1 : 1;
         }
 
-        setInterval(updateStatus, 5000);
+        setInterval(updateStatus, 360000);
     </script>
 </body>
 </html>

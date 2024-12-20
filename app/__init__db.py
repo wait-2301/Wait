@@ -176,6 +176,36 @@ JOIN
     users u_manager ON u_manager.user_id = m.user_id;
 ''')
 
+cur.execute('''
+    CREATE OR REPLACE VIEW manager_table_status_view AS
+SELECT 
+    jsonb_agg(
+        DISTINCT jsonb_build_object(
+            'name', u.full_name,
+            'table', t.room_name,
+            'status', 
+                CASE qu.status
+                    WHEN 'AVAILABLE' THEN 'Доступен'
+                    WHEN 'IN_PROGRESS' THEN 'В процессе'
+                    WHEN 'UNAVAILABLE' THEN 'Не доступен'
+                    WHEN 'OCCUPIED' THEN 'Занят'
+                    ELSE qu.status
+                END
+        )
+    ) AS queue_status_json
+FROM 
+    managers q
+JOIN 
+    users u ON u.user_id = q.user_id
+JOIN 
+    rooms t ON t.id = q.room_id
+JOIN 
+    queue qu ON qu.room_id = t.id;
+
+''')
+
+
+
 
 #Index на номер телефона для таблицы users
 cur.execute('''

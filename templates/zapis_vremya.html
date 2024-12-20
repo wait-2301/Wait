@@ -169,7 +169,7 @@
 </head>
 <body>
     <!-- Кнопка "Назад" -->
-    <a href="#" class="back-arrow">&#8592;</a>
+    <a href="/" class="back-arrow">&#8592;</a>
 
     <!-- Логотип сверху справа -->
     <img src="/static/Aitu3.png" alt="Aitu logo" class="top-right-logo">
@@ -177,20 +177,22 @@
     <!-- Основной контейнер -->
     <div class="container">
         <!-- Календарь -->
-        <div class="calendar-container">
-            <input id="date" type="date" value="2024-12-01" />
-            <select id="dynamic-time">
-                <option disabled selected>Выберите время</option>
-            </select>
-        </div>
-
-        <!-- Текст и кнопка вместе -->
-        <div class="text-container">
-            <h1>Выберите удобный вам день и время!</h1>
-            <div class="button-container">
-                <button>Назначить</button>
+        <form action="{{ url_for('auth.submit_time') }}" method="POST">
+            <div class="calendar-container">
+                <input id="date" name="date" type="date" required />
+                <select id="dynamic-time" name="time" required>
+                    <option disabled selected>Выберите время</option>
+                </select>
             </div>
-        </div>
+
+            <!-- Текст и кнопка вместе -->
+            <div class="text-container">
+                <h1>Выберите удобный вам день и время!</h1>
+                <div class="button-container">
+                    <button type="submit">Назначить</button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <!-- Логотип снизу по центру -->
@@ -200,20 +202,21 @@
     // Динамическое создание времени
     const timeSelect = document.getElementById('dynamic-time');
 
-    // Генерация временного интервала: 9:00 - 18:00, исключая 13:00 - 14:00
-    for (let hour = 9; hour <= 18; hour++) {
-        if (hour === 13) continue;
+for (let hour = 9; hour <= 18; hour++) {
+    if (hour === 13) continue;
 
-        for (let minutes = 0; minutes < 60; minutes += 10) {
-            if (hour === 18 && minutes > 0) continue;
+    for (let minutes = 0; minutes < 60; minutes += 10) {
+        if (hour === 18 && minutes > 0) break;
 
-            const time = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            const option = document.createElement('option');
-            option.value = time;
-            option.textContent = time;
-            timeSelect.appendChild(option);
-        }
+        const time = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        const option = document.createElement('option');
+        option.value = time;
+        option.textContent = time;
+        timeSelect.appendChild(option);
     }
+}
+
     </script>
 </body>
+
 </html>

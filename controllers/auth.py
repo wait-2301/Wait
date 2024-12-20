@@ -50,7 +50,6 @@ def login():
 
 
 @auth.route('/register', methods=['GET', 'POST'])
-@login_required
 def register():
     print("Begin")  # Check if route is being triggered
     print(f"Received {request.method} request at {request.url}")
@@ -72,12 +71,37 @@ def register():
             print(f"Inserting into queue service for phone: {cleaned_phone}")
             QM.insert_into_queue_service(cleaned_phone, full_name, None, purpose)
             session['user_id'] = cleaned_phone
-            return redirect(url_for('talon.get_talon'))
+        
+            if queue_type == "Долговременная запись":
+                return redirect(url_for('auth.submit_time'))
+            else:
+                return redirect(url_for('talon.get_talon'))
         except Exception as e:
             print(f"Error: {e}")
             return f"An error occurred while saving the data: {e}"
 
     return render_template('vvod_dannyh.html')
+
+
+@auth.route('/r/submit_time', methods=['GET', 'POST'])
+def submit_time():
+    if request.method == 'POST':
+        date = request.form.get('date')
+        time = request.form.get('time')
+        user_id = session.get('user_id')
+
+        if not user_id:
+            return redirect(url_for('auth.register'))
+        
+        try:
+            # Example of saving to the queue service (update to match your logic)
+            QM.update_queue_time_service(user_id, date, time)
+            return redirect(url_for('talon.get_talon'))
+        except Exception as e:
+            print(f"Error: {e}")
+            return f"An error occurred while saving the date and time: {e}"
+
+    return render_template('zapis_vremya.html')
 
 
 

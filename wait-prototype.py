@@ -105,9 +105,9 @@ def main_applicant_commnads(message):
 
 @bot.message_handler(func=lambda message: message.text.lower() in ["help", "/help"])
 def help_command(message):
-    # main_applicant_commnads(message)
-
-    if is_manager(message.chat.id):
+    main_applicant_commnads(message)
+    user_id = message.chat.id
+    if is_manager(user_id):
        
         button_call_next = types.InlineKeyboardButton('Вызвать следующего', callback_data='call_next')
         button_call_next_by_id = types.InlineKeyboardButton('Вызвать по ID', callback_data='call_next_by_id')
@@ -129,7 +129,7 @@ def help_command(message):
         keyboard.add(button_remove_manager)
 
         # bot.send_message(message.chat.id, text='Менеджерские команды:', reply_markup=keyboard)
-        bot.send_message(message.chat.id, text='_ Менеджерские команды: _', reply_markup=keyboard, parse_mode="Markdown")
+        bot.send_message(user_id, text='_ Менеджерские команды: _', reply_markup=keyboard, parse_mode="Markdown")
     
 
 
