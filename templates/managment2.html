@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление клиентами</title>
+    <style>
+        /* Общие стили для страницы */
+        body {
+            font-family: 'Mulish', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .left-bar {
+            width: 60px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #FFFFFF;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .left-bar a {
+            width: 40px;
+            height: 40px;
+            background-color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: -14px; /* Отступ сверху */
+        }
+
+        .timer img {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .timer span {
+            color: #6BD084;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 16px;
+            letter-spacing: 0.1px;
+            text-align: center;
+        }
+
+        .outer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 170px;
+            width: 95%;
+            height: 90%;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 28%;
+            height: 90%;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .main-container h2 {
+            color: #9FA2B4;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            margin-top: 80px;
+        }
+
+        .number {
+            font-size: 64px;
+            font-weight: 900;
+            color: #5C5353;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            font-size: 14px;
+            font-weight: 600;
+            color: #252733;
+            margin-bottom: 30px;
+        }
+
+        /* Новые кнопки */
+        .button-row {
+            display: flex;
+            justify-content: space-evenly;
+            width: 97%;
+            margin-top: 50px;
+        }
+
+        .button {
+            width: 45%;
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid #E57373;
+            background-color: #fff;
+            color: #E57373;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease; /* Плавный эффект */
+        }
+
+        .submit-button {
+            width: 91%;
+            height: 60px;
+            border-radius: 8px;
+            background-color: #7095C6;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            margin-top: 5px; /* Отступ сверху */
+        }
+
+        .button.repeat {
+            border-color: #7095C6;
+            color: #7095C6;
+        }
+        .button:hover {
+            background-color: #E57373;
+            color: #fff;
+        }
+
+        .button.repeat:hover {
+            background-color: #7095C6;
+            color: #fff;
+        }
+
+
+        .submit-button:hover {
+            background-color: #5a7bb5;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            height: 100%;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .list-container h3 {
+            color: #9FA2B4;
+            font-family: 'Mulish', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .list-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .list-container li {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .list-container li:last-child {
+            border-bottom: none;
+        }
+
+        .list-container .client-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .list-container .client-details {
+            margin-left: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-container .client-name {
+            font-weight: bold;
+        }
+
+        .list-container .client-status {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .list-container .time-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-wrapper .icon {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+        }
+
+        .time-wrapper .time {
+            font-family: 'Mulish', sans-serif;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 800;
+        }
+
+        .time-wrapper .time.time-data {
+            color: #519160;
+        }
+
+        .time-wrapper .time.ticket-data {
+            color: #1C85C6;
+        }
+
+        .list-container input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .list-container label {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-bar">
+        <a href="/management">
+            <img src="/static/icon1.png" alt="Иконка 1" style="width: 30px; height: 30px;">
+        </a>
+        <a href="/admin">
+            <img src="/static/icon2.png" alt="Иконка 2" style="width: 30px; height: 30px;">
+        </a>
+        <a href="/archive">
+            <img src="/static/icon3.png" alt="Иконка 3" style="width: 30px; height: 30px;">
+        </a>
+        <a href="/profile">
+            <img src="/static/icon4.png" alt="Иконка 3" style="width: 30px; height: 30px;">
+        </a>
+    </div>
+
+    <!-- Центральный блок -->
+    <div class="outer-container">
+        <div class="main-container" style="margin-left: 100px;">
+            <div class="timer">
+                <img src="/static/time.png" alt="Часы">
+                <span id="timer">00:00</span>
+            </div>
+            <h2>{{ client_info.table_name }}</h2>
+            <div class="number" id="ticket-number">{{ queue_number }}</div> <!-- Set from server -->
+            <div class="info" id="client-info" style="margin-bottom: 130px;">
+                {{ client_info.name }}<br>{{ client_info.reason }}
+            </div>
+            <div class="button-row">
+                <button class="button absence">Неявка</button>
+                <button class="button repeat">Повтор</button>
+            </div>
+            <button class="submit-button">ЗАВЕРШИТЬ</button>
+        </div>
+    
+        <div class="list-container">
+            <h3>ОЧЕРЕДЬ</h3>
+            <ul id="queue-list"></ul>
+        </div>
+    </div>
+    
+    <script>
+        async function fetchQueue() {
+            try {
+                const response = await fetch('/management/queue');
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+    
+                const data = await response.json();
+                const queueList = document.getElementById('queue-list');
+                queueList.innerHTML = ''; // Clear the current list
+    
+                data.forEach((item, index) => {
+                    const displayInfo = item.time ? item.time : item.ticket;
+                    const reason = item.time ? 'Записан по времени' : 'Живая очередь';
+                    const isTime = !!item.time;
+    
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <label>
+                            <div class="client-info">
+                                <input type="radio" name="client" value="${index}" onclick="selectClient('${item.name}', '${displayInfo}', '${reason}')">
+                                <div class="client-details">
+                                    <span class="client-name">${item.name}</span>
+                                    <span class="client-status">${reason}</span>
+                                </div>
+                            </div>
+                            <div class="time-wrapper">
+                                <img src="/static/Person.svg" alt="Иконка" class="icon">
+                                <span class="time ${isTime ? 'time-data' : 'ticket-data'}">${displayInfo}</span>
+                            </div>
+                        </label>
+                    `;
+    
+                    queueList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Не удалось загрузить очередь:', error);
+            }
+        }
+    
+        setInterval(fetchQueue, 5000);
+        fetchQueue();
+    </script>
+    
+</body>
+</html>

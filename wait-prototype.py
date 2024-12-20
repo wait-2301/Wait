@@ -4,6 +4,7 @@ from threading import Timer, Lock
 import os
 from dotenv import load_dotenv
 import services.queue_service as qm
+import services.queue_history_service as qhs
 from services.queue_service import is_manager
 
 from utils.decorators import manager_only
@@ -15,7 +16,7 @@ bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 # Thread-safe storage for manager-specific data
 managers_data = {}
 lock = Lock()
-DEFAULT_TIMER_SECONDS = 120
+DEFAULT_TIMER_SECONDS = 180
 
 MESSAGE_ALREADY_REGISTERED = "Вы уже зарегистрированы в очереди! ✅"
 
@@ -134,11 +135,11 @@ def help_command(message):
 
 @bot.message_handler(func=lambda message: message.text.lower() in ["register", "/register"])
 def register(message):
-    # if is_manager(user_id):
-    #     bot.send_message(message.chat.id, "Вы менеджер. Нажмите на /help чтобы посмотреть на доступные вам команды.")
-    #     return
-
     user_id = message.chat.id
+    if is_manager(user_id):
+        bot.send_message(message.chat.id, "Вы менеджер. Нажмите на /help чтобы посмотреть на доступные вам команды.")
+        return
+
     users_count = qm.get_queue_count_by_user_id_service(user_id)
     if users_count > 0:
          bot.send_message(user_id, MESSAGE_ALREADY_REGISTERED)
@@ -207,14 +208,14 @@ def prompt_for_applicant_id(manager_id, message):
     bot.register_next_step_handler(message, lambda msg: handle_applicant_id_input(msg, manager_id))
 
 def handle_applicant_id_input(message, manager_id):
-    applicant_user_id = message.text
+    applicant_queue_number = message.text
+    applicant_user_id = qm.get_queue_by_queue_number_service(applicant_queue_number).user_id
     call_next(manager_id, applicant_user_id)
 
 def call_next(manager_id, applicant_user_id):
     if not applicant_user_id:
         bot.send_message(manager_id, "Не указан applicant ID.")
         return
-    applicant_user_id = qm.get_queue_by_user_id_service(applicant_user_id).user_id
 
     with lock:
         if manager_id not in managers_data:
@@ -277,6 +278,9 @@ def end_conversation(message):
             return
         current_applicant = managers_data[manager_id]["current_applicant"]
         bot.send_message(current_applicant, "Ваше время завершено. Спасибо!")
+        queue_id = qm.get_queue_by_user_id_service(current_applicant).id
+        qm.set_status_for_queue(queue_id, 'END_CONVERSATION')
+        print(qm.get_queue_by_user_id_service(current_applicant))
         delete_user_from_queue(current_applicant)
 
         managers_data[manager_id]["current_applicant"] = None
@@ -297,7 +301,10 @@ def no_show(message):
             return
         current_applicant = managers_data[manager_id]["current_applicant"]
         bot.send_message(current_applicant, "Вы не подошли вовремя. Очередь движется дальше. \n Но вы можете снова встать в очередь /register")
+        queue_id = qm.get_queue_by_user_id_service(current_applicant).id
+        qm.set_status_for_queue(queue_id, 'NO_SHOW')
         delete_user_from_queue(current_applicant)
+    
 
         managers_data[manager_id]["current_applicant"] = None
         if managers_data[manager_id]["applicant_timer"]:
@@ -310,6 +317,8 @@ def move_queue_due_to_no_show(manager_id):
     with lock:
         if manager_id in managers_data and managers_data[manager_id]["current_applicant"]:
             current_applicant = managers_data[manager_id]["current_applicant"]
+            queue_id = qm.get_queue_by_user_id_service(current_applicant).id
+            qm.set_status_for_queue(queue_id, 'NO_SHOW')
             bot.send_message(manager_id, "Апликант не подошол вовремя. Очередь движется дальше.")
             bot.send_message(current_applicant, "Вы не подошли вовремя. Очередь движется дальше.")
             delete_user_from_queue(current_applicant)
@@ -376,7 +385,6 @@ def delete_user_from_queue(user_id):
         qm.set_room_status_service(user_queue.room_id, 'AVAILABLE')
         qm.delete_user_from_queue_service(user_id)
         print("Deleted!!! ")
-
 
 
 

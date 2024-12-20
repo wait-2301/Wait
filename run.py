@@ -1,40 +1,49 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from datetime import datetime
-import services.queue_service as queue_service
+from flask import Flask, render_template
+from controllers.admin_panel import admin_pn
+from controllers.archive import archive
+from controllers.auth import auth
+from controllers.managment import management
+from controllers.talon import talon
+from controllers.profile import profile
+import os
+import threading
+
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
-queue = []
-admission_count = 5  # Example: 5 admissions available
+# Register blueprints
+app.register_blueprint(admin_pn, url_prefix="/admin")
+app.register_blueprint(archive, url_prefix="/archive")
+app.register_blueprint(auth, url_prefix="/auth")
+app.register_blueprint(management, url_prefix="/management")
+app.register_blueprint(talon, url_prefix="/talon")
+app.register_blueprint(profile, url_prefix="/profile")
 
-@app.route('/')
+
+@app.route("/")
 def index():
-    return render_template('index.html', queue=queue)
+    return render_template("main.html")
 
-@app.route('/register', methods=['POST'])
-def register():
-    name = request.form.get('name')
-    purpose = request.form.get('purpose')
-    if name and purpose:
-        queue.append({
-            'id': len(queue) + 1,
-            'name': name,
-            'purpose': purpose,
-            'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'admission': None
-        })
-        for admission in range(1, admission_count + 1):
-            if not any(q['admission'] == admission for q in queue):
-                queue[-1]['admission'] = admission
-                break
-    return redirect(url_for('index'))
 
-@app.route('/queue', methods=['GET'])
-def get_all_queue():
-    queue_data = queue_service.get_all_queue_service()
-    serialized_queues = [queue.to_dict() for queue in queue_data]
-    return jsonify(serialized_queues)
+@app.template_filter('phone_format')
+def phone_format(phone):
 
+    phone = str(phone)
+    phone = ''.join(filter(str.isdigit, phone))
+    
+    # Format phone number as +7(XXX)XXX-XX-XX
+    if len(phone) == 11:  
+        return f"+7({phone[1:4]}){phone[4:7]}-{phone[7:9]}-{phone[9:11]}"
+    else:
+        return phone  
+
+# import subprocess
+
+# # Run the wait-prototype.py script
+# subprocess.Popen(['python', 'wait-prototype.py'])
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
+

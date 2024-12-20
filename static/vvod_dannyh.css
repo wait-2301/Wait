@@ -1,0 +1,225 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+/* Убираем оранжевую обводку при фокусе */
+button:focus, input:focus, select:focus {
+    outline: none;  /* Убирает стандартную обводку */
+    box-shadow: none;  /* Убирает тень, если она появляется */
+}
+
+
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 42px; /* Increased size */
+    color: #333;
+    text-decoration: none;
+}
+
+.top-right-logo {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 163px;
+    height: 297px;
+    flex-shrink: 0;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Общий стиль для всех полей ввода */
+.form-input {
+    width: 525px;
+    height: 25px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    border: 1px solid #ccc; /* Добавьте цвет границы для видимости */
+    background: #FFF;
+    padding: 10px;
+    font-size: 16px;
+    box-sizing: border-box; /* Убедитесь, что padding включен в ширину */
+}
+
+/* Медиа-запрос для адаптивности */
+@media (max-width: 550px) {
+    .form-input {
+        width: 400px;
+    }
+}
+
+h1 {
+    color: #3C3838;
+    font-family: "Merriweather Sans", sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+}
+
+
+input[type="tel"] {
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Стиль для Имя */
+.form-row input:first-child {
+    width: 250px;
+    height: 25px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    border: 1px;
+    background: #FFF;
+}
+
+/* Стиль для Фамилия */
+.form-row input:last-child {
+    width: 250px;
+    height: 25px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    border: 1px;
+    background: #FFF;
+}
+
+/* Стиль для Номер телефона */
+input[placeholder="Номер телефона"] {
+    width: 525px;
+    height: 25px;
+    flex-shrink: 0;
+    border-radius: 15.341px;
+    border: 1px;
+    background: #FFF;
+}
+
+/* Стиль для Цель визита */
+select:first-of-type {
+    width: 545px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    border: 1px;
+    background: #FFF;
+}
+
+/* Стиль для Живая очередь */
+select:last-of-type {
+    width: 545px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    background: #FFF;
+}
+
+button {
+    width: 100%;
+    max-width: 346px;
+    height: 75px;
+    background-color: #7095C6;
+    color: #FFF;
+    border: none;
+    border-radius: 23px;
+    font-size: 24px;
+    font-family: "Karla", sans-serif;
+    margin-top: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #5d82b6;
+}
+
+.bottom-center-logo {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 235px;
+    height: 58px;
+}
+
+@media (max-width: 550px) {
+    .form-row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* чтобы элементы выровнялись по левому краю */
+    }
+
+    .form-row input {
+        width: 100%;
+        margin-bottom: 10px; 
+    }
+
+    .form-row input:first-child {
+        width: 400px;
+    }
+    
+    /* Стиль для Фамилия */
+    .form-row input:last-child {
+        width: 400px;   
+    }
+
+/* Стиль для Номер телефона */
+input[placeholder="Номер телефона"] {
+    width: 400px    ;
+
+}
+
+/* Стиль для Цель визита */
+select:first-of-type {
+    width: 400px;
+}
+
+/* Стиль для Живая очередь */
+select:last-of-type {
+    width: 400px;
+
+}
+
+h1 {
+    font-size: 22px;
+}
+button {
+    width: 340px;
+    height: 75px;
+    font-size: 18px;
+}
+    .top-right-logo {
+        width: 100px;
+        height: 150px;
+    }
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>УСПЕШНО ЗАПИСАНЫ!</title>
+    <style>
+        /* Импорт шрифтов */
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@700&family=Poppins:wght@400;500;600&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #ffffff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .layout {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 100%;
+            width: 100%;
+            gap: 30px;
+            justify-content: center; /* Центрируем по горизонтали */
+            align-items: center; /* Центрируем по вертикали */
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 200px;
+            position: relative;
+        }
+
+        .image-section img {
+            max-width: 206px;
+            height: auto;
+            display: block;
+            margin: 20px auto 0; /* Отступ сверху: 20px */
+        }
+
+
+
+        .text-section {
+            flex: 2;
+            text-align: left; /* Центрируем текст */
+        }
+
+        .header {
+            font-family: 'Merriweather Sans', Arial, sans-serif;
+            font-size: 48px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 30px;
+        }
+
+        .details {
+            font-family: 'Poppins', Arial, sans-serif;
+            color: #555555;
+            line-height: 1.8;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .details p {
+            margin: 8px 0;
+        }
+
+        .details a {
+            color: #7095C6;
+            text-decoration: none;
+        }
+
+        .details a:hover {
+            text-decoration: underline;
+        }
+
+        .warning {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 14px;
+            color: #e74c3c;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            background-color: #7095C6;
+            color: #FFFFFF;
+            font-size: 20px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: "Roboto", sans-serif;
+            margin-top: 20px;
+        }
+
+        .button-container button:hover {
+            background-color: #577AA3;
+        }
+
+        .top-right-logo {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 163px;
+            height: 297px;
+            flex-shrink: 0;
+        }
+
+        .bottom-center-logo {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 235px;
+            height: 58px;
+        }
+
+        /* Адаптация под мобильные устройства */
+        @media (max-width: 768px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Центрируем по вертикали */
+        align-items: center; /* Центрируем по горизонтали */
+        padding-left: 50px;
+        padding-right: 50px;
+        height: 100vh;
+        box-sizing: border-box;
+    }
+
+    .layout {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .image-section {
+        display: none; /* Полностью скрываем секцию с изображением Telegram */
+    }
+
+    .text-section {
+        text-align: left;
+        width: 90%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .header {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .details {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .button-container button {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+
+    .top-right-logo {
+        width: 100px; /* Уменьшаем логотип */
+        height: auto;
+    }
+
+    .bottom-center-logo {
+        width: 180px;
+        height: auto;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="layout">    
+        <!-- Левая часть с изображением -->
+        <div class="image-section">
+            <img src="/static/tg.png" alt="Телеграм">
+        </div>
+
+        <!-- Правая часть с текстом -->
+        <div class="text-section">
+            <h1 class="header">УСПЕШНО ЗАПИСАНЫ!</h1>
+            <div class="details">
+                <p><strong>Салимов Нурдаудет</strong></p>
+                <p>03 декабря 2024 года, 13:00</p>
+                <p>Подача документов</p>
+                <p>87051748120</p>
+                <p>
+                    <a href="https://2gis.kz/astana/firm/70000001036709805">проспект Мангилик Ел, 55/11<br>
+                    Бизнес-центр EXPO, блок C1<br>
+                    Астана, Казахстан, 010000</a>
+                </p>
+            </div>
+            <p class="warning">Помните! Запись аннулируется после 3 минут опоздания.</p>
+            <div class="button-container">
+                <button href="#">НА ГЛАВНУЮ</button>
+            </div>
+        </div>
+    </div>
+    <img src="/static/Aitu3.png" alt="Aitu Logo" class="top-right-logo">
+    <img src="/static/wait33.png" alt="Wait Logo" class="bottom-center-logo">
+</body>
+</html>

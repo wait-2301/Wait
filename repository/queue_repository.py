@@ -160,7 +160,7 @@ def get_all_queue_entries():
     try:
         conn = db_conn()
         cur = conn.cursor()
-        cur.execute("SELECT queue_number, full_name, room_id, purpose, priority, status FROM queue ORDER BY queue_number")
+        cur.execute("SELECT queue_number, full_name, room_id, purpose, status FROM queue ORDER BY queue_number")
         data = cur.fetchall()
         print("All queue data : ", data)
     except Exception as e:

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Архив</title>
+    <!-- Подключаем шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Левая панель */
+        .left-bar {
+            width: 60px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #FFFFFF;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-bar a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Логотип в правом углу */
+        .top-right-logo {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 163px;
+            height: 297px;
+            z-index: -1;
+        }
+
+        /* Таблица */
+        .table-container {
+            margin: 50px 0;
+            width: 83%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            overflow-y: auto
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            color: #000;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px 18px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+
+        td {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* Стили для данных */
+        .manager-data {
+            color: #000;
+            font-weight: 400;
+        }
+
+        .client-data {
+            color: #2F65DD;
+            font-weight: 400;
+        }
+
+        .date-time {
+            color: #000;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        /* Статусы */
+        .status-box {
+            display: flex;
+            width: 100px;
+            height: 25px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .status-in-process {
+            background: #FAF8D9;
+            color: #E0BF2B;
+        }
+
+        .status-completed {
+            background: #ECFFEE;
+            color: #00B112;
+        }
+
+        .status-absent {
+            background: #FFECEC;
+            color: #E0544F;
+        }
+    </style>
+</head>
+<body>
+    <!-- Левая панель -->
+    <div class="left-bar">
+        <a href="/management"><img src="/static/icon1.png" alt="Иконка 1"></a>
+        <a href="/admin"><img src="/static/icon2.png" alt="Иконка 2"></a>
+        <a href="/archive"><img src="/static/icon3.png" alt="Иконка 3"></a>
+        <a href="/profile"><img src="/static/icon4.png" alt="Иконка 4"></a>
+    </div>
+
+    <!-- Логотип -->
+    <img src="/static/Aitu3.png" alt="Aitu logo" class="top-right-logo">
+
+    <!-- Контейнер таблицы -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="padding-left: 8px;">Менеджеры</th>
+                    <th >Клиенты</th>
+                    <th>Статус</th>
+                    <th>Дата и время</th>
+                </tr>
+            </thead>
+            <tbody id="history-table-body">
+                <!-- Динамический контент -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Функция для загрузки данных истории с Flask сервера
+        async function loadHistory() {
+            const response = await fetch("/archive/history"); // Запрос к маршруту Flask
+            const historyData = await response.json(); // Получаем данные в формате JSON
+            const tableBody = document.getElementById("history-table-body");
+
+            // Заполняем таблицу
+            historyData.forEach(item => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td class="manager-data">${item.manager}</td>
+                    <td class="client-data">${item.client}</td>
+                    <td>
+                        <div class="status-box ${getStatusClass(item.status)}">${item.status}</div>
+                    </td>
+                    <td class="date-time">${item.date_time}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Функция для определения класса статуса
+        function getStatusClass(status) {
+            switch (status) {
+                case "В ПРОЦЕССЕ": return "status-in-process";
+                case "ЗАВЕРШЕН": return "status-completed";
+                case "НЕЯВКА": return "status-absent";
+                default: return "";
+            }
+        }
+
+        // Загрузка данных при загрузке страницы
+        loadHistory();
+    </script>
+</body>
+</html>

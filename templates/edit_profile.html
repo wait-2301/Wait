@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль сотрудника</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('static/background.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .left-bar {
+            width: 60px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #FFFFFF;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-bar a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            width: 60%;
+            height: 500px;
+            max-width: 900px;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        /* Верхний блок */
+        .profile-header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .profile-left-top {
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+        }
+
+        .profile-left-top .profile-item {
+            font-family: "Merriweather Sans", sans-serif;
+            color: #000;
+        }
+
+        .profile-left-top .profile-item:first-child {
+            font-size: 28px;
+            font-weight: 400;
+        }
+
+        .profile-left-top .profile-item:last-child {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            color: #ADA7A7;
+        }
+
+        .profile-right-top {
+            text-align: right;
+        }
+
+        .profile-right-top .greeting {
+            color: #3E435D;
+            font-family: "Merriweather Sans", sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .profile-right-top .date {
+            color: #ADA7A7;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        /* Форма */
+        .form-section {
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            width: 48%;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            font-weight: 400;
+            font-family: 'Poppins', sans-serif;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color: #000;
+            background-color: #F5F5F5;
+            outline: none;
+        }
+
+        .form-group input:disabled {
+            background-color: #F0F0F0;
+        }
+
+        /* Кнопка */
+        .edit-button {
+            background-color: #7095C6;
+            color: #FFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 170px;
+            margin-top: auto; /* Кнопка прижата вниз */
+            text-align: center;
+        }
+
+        .edit-button:hover {
+            background-color: #5A7BB5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Левая панель -->
+    <div class="left-bar">
+        <a href="#"><img src="/static/icon1.png" alt="Иконка 1" style="width: 30px; height: 30px;"></a>
+        <a href="#"><img src="/static/icon2.png" alt="Иконка 2" style="width: 30px; height: 30px;"></a>
+        <a href="#"><img src="/static/icon3.png" alt="Иконка 3" style="width: 30px; height: 30px;"></a>
+        <a href="#"><img src="/static/icon4.png" alt="Иконка 4" style="width: 30px; height: 30px;"></a>
+    </div>
+
+    <!-- Центральный контейнер -->
+    <div class="profile-container">
+        <!-- Верхний блок -->
+        <div class="profile-header-wrapper">
+            <!-- Левая часть -->
+            <div class="profile-left-top">
+                <div class="profile-item">Нурдаулет Салимов</div>
+                <div class="profile-item">Стол 3</div>
+            </div>
+            <!-- Правая часть -->
+            <div class="profile-right-top">
+                <div class="greeting">Здравствуйте, Нурдаулет</div>
+                <div class="date">Пятница, 27 Ноября 2024</div>
+            </div>
+        </div>
+
+        <!-- Форма -->
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Имя</label>
+                    <input type="text" id="name" value="Нурдаулет" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="surname">Фамилия</label>
+                    <input type="text" id="surname" value="Салимов" disabled>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="patronymic">Отчество</label>
+                    <input type="text" id="patronymic" value="" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="position">Должность</label>
+                    <input type="text" id="position" value="Консультант" disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопка -->
+        <button class="edit-button" id="edit-button">Редактировать</button>
+    </div>
+
+    <script>
+        const editButton = document.getElementById('edit-button');
+        const inputs = document.querySelectorAll('#name, #surname, #patronymic');
+
+        editButton.addEventListener('click', () => {
+            const isEditing = editButton.textContent === 'Сохранить';
+            
+            // Переключение состояния полей
+            inputs.forEach(input => {
+                input.disabled = isEditing; 
+            });
+
+            // Переключение текста кнопки
+            editButton.textContent = isEditing ? 'Редактировать' : 'Сохранить';
+        });
+    </script>
+</body>
+</html>

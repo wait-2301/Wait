@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ваш талон</title>
+    <!-- Подключение шрифтов -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&family=Mulish:wght@700;800&family=Poppins:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Merriweather Sans', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .main-button {
+            position: absolute;
+            bottom: 150px;
+            right: 100px;
+            background-color: #7095C6;
+            color: #fff;
+            font-family: 'Karla', sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .main-button:hover {
+            background-color: #5679a8;
+        }
+        .top-right-logo {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 163px;
+            height: 297px;
+            flex-shrink: 0;
+        }
+        /* Левый блок */
+        .left {
+            position: absolute;
+            top: 20%;
+            left: 25%;
+            text-align: left;
+        }
+        .left h1 {
+            color: #3C3838;
+            font-family: "Merriweather Sans", sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+        }
+        .ticket-number {
+            color: #3C3838;
+            font-family: 'Mulish', sans-serif;
+            font-size: 96px;
+            font-weight: 800;
+        }
+        .name {
+            color: #000;
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 400;
+        }
+        .info {
+            color: #515354;
+            font-family: "Merriweather Sans", sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+        }
+        .phone {
+            color: #515354;
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 40px;
+        }
+        /* Правая часть */
+        .right {
+            position: absolute;
+            top: 30%;
+            right: 25%;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            width: 400px; /* Фиксированная ширина для предотвращения сдвигов */
+        }
+        .waiting {
+            margin-bottom: 30px;
+            color: #000;
+            font-family: "Merriweather Sans", sans-serif;
+            font-size: 24px;
+            font-weight: 400;
+            text-align: left;
+        }
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            width: 420px;
+            margin-top: 80px;
+        }
+        .status .line {
+            position: absolute;
+            top: 50%;
+            height: 1px;
+            background-color: #ddd;
+            z-index: 0;
+        }
+        .telegram-icon {
+            position: absolute;
+            bottom: 160px; /* Чуть выше */
+            left: 140px; /* Чуть правее */
+            width: 80px;
+            height: 80px;
+            z-index: 10;
+        }
+
+        .telegram-icon img {
+            width: 200px;
+            height: 120px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .telegram-icon img:hover {
+            transform: scale(1.1); /* Эффект увеличения при наведении */
+        }
+
+
+        .line-first { left: 60px; width: 110px; }
+        .line-second { left: 250px; width: 110px; }
+        .circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            color: #333;
+            transition: background-color 0.5s ease;
+        }
+        .circle.active { background-color: #93C9E0; box-shadow: 0 0 15px rgba(147, 201, 224, 0.6); }
+        .circle img { width: 30px; height: 30px; }
+        /* Сообщение под статусом */
+        .waiting-message {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            color: #777;
+            text-align: center;
+            margin-top: 20px;
+            min-height: 60px;
+        }
+        .highlight {
+            color: #825353;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+        }
+        .warning-message {
+            color: #825353;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 30px;
+        }
+        .logo {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-right-logo">
+        <img src="/static/Aitu3.png" alt="Фото">
+    </div>
+
+    <div class="telegram-icon">
+        <a href="https://t.me/wa1t_bot" target="_blank">
+            <img src="/static/tg.png" alt="Telegram">
+        </a>
+    </div>
+        
+    <!-- Левый блок -->
+    
+        <div class="left">
+            <h1>ВАШ ТАЛОН</h1>
+            <div class="ticket-number">{{ ticket_number }}</div>
+            <div class="name">{{ queue.full_name }}</div>
+            <div class="info">{{ queue.purpose }}</div>
+            <div class="phone">{{ queue.user_id | phone_format }}</div>
+        </div>
+    
+        
+
+    <!-- Правая часть -->
+    <div class="right">
+        <div class="waiting" id="waiting-info">Людей перед вами: 1<br>Время ожидания: ~ 7 мин</div>
+        <div class="status">
+            <div class="line line-first"></div>
+            <div class="line line-second"></div>
+            <div class="circle active" id="circle-1">
+                <img src="/static/clock.png" alt="Часы">
+            </div>
+            <div class="circle" id="circle-2">
+                <img src="/static/checkmark.png" alt="Галочка">
+            </div>
+            <div class="circle" id="circle-3">
+                <img src="/static/Close.png" alt="Против">
+            </div>
+        </div>
+        <div class="waiting-message" id="message"></div>
+    </div>
+
+    <!-- Кнопка "На главную" -->
+    <button class="main-button">На главную</button>
+    <img src="/static/wait33.png" alt="Логотип" class="logo">
+
+    <!-- Скрипт -->
+    <script>
+        let currentStatus = 1;
+        const messages = [
+            "<strong>Людей перед вами: 1</strong><br>Время ожидания: ~ 7 мин",
+            "<strong>ВАС ВЫЗВАЛИ!</strong><br>Пожалуйста проходите к столу номер <strong>1</strong>",
+            "Запись завершена, спасибо за обращение!"
+        ];
+        const bottomMessages = [
+            "Вас скоро примут, ожидайте...",
+            "<span class='highlight'>Помните!</span> <br><span class='warning-message'>Запись обнуляется после 3 минут опоздания.</span>",
+            ""
+        ];
+
+        function updateStatus() {
+            document.querySelectorAll('.circle').forEach(circle => circle.classList.remove('active'));
+            document.getElementById(`circle-${currentStatus}`).classList.add('active');
+            document.getElementById('waiting-info').innerHTML = messages[currentStatus - 1];
+            document.getElementById('message').innerHTML = bottomMessages[currentStatus - 1];
+
+            if (currentStatus === 3) {
+                document.getElementById('waiting-info').style.display = 'block';
+            } else {
+                document.getElementById('waiting-info').style.display = 'block';
+            }
+
+            currentStatus = currentStatus < 3 ? currentStatus + 1 : 1;
+        }
+
+        setInterval(updateStatus, 5000);
+    </script>
+</body>
+</html>

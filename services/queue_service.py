@@ -40,21 +40,19 @@ def get_all_queue_entries_table():
         return "Очередь пуста."
     else:
         table = PrettyTable()
-        table.field_names = ["#", "Имя и Фамилия", "Номер Стола", "Цель Визита", "Лгота", "Статус"]
+        table.field_names = ["Номер Очереди", "Имя и Фамилия", "Номер Стола", "Цель Визита", "Статус"]
 
-        for queue_number, full_name, room_id, purpose, priority, status in queue:
+        for queue_number, full_name, room_id, purpose, status in queue:
             room_name = None
             if room_id:
                 room_name = rr.get_room_name_by_id(room_id)
                 room_name = room_name[0] if isinstance(room_name, tuple) else room_name  # Extract string from tuple if needed
             room_name = room_name[:10] if room_name else "Не назначено"     
-            priority_text = "Да" if priority else "Нет"
             table.add_row([
             queue_number,
             full_name[:30],  # Truncate to fit table width
             room_name,       # Already truncated or default text
             purpose[:30],    # Truncate to fit table width
-            priority_text,
             status[:11]      # Truncate to fit table width
             ])
 

@@ -25,7 +25,6 @@ def get_available_room_name():
 
 
 def get_room_name_by_id(id):
-    """Fetches the room name by its ID."""
     try:
         conn = db_conn()
         cur = conn.cursor()
@@ -42,7 +41,6 @@ def get_room_name_by_id(id):
 
 
 def get_available_rooms_for_managers():
-    """Fetches all rooms that are not assigned to any managers."""
     try:
         conn = db_conn()
         cur = conn.cursor()
@@ -70,7 +68,6 @@ def get_available_rooms_for_managers():
 
 
 def set_room_status(room_id, status):
-    """Updates the status of a room."""
     try:
         conn = db_conn()
         cur = conn.cursor()

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="stylesheet" href="/static/vvod_dannyh.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Введите данные</title>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="/" class="back-arrow">&#8592;</a>
+    <img src="/static/Aitu3.png" alt="Aitu logo" class="top-right-logo">
+    <div class="container">
+        <h1>ВВЕДИТЕ ДАННЫЕ</h1>
+        <form action="/auth/register" method="POST">
+            <div class="form-row">
+                <input type="text" name="first_name" placeholder="Имя" required>
+                <input type="text" name="last_name" placeholder="Фамилия" required>
+            </div>
+            <div class="row">
+                <input type="text" name="phone" id="phone" placeholder="Номер телефона" required>
+            </div>
+            <select name="purpose" required>
+                <option disabled selected>Цель визита</option>
+                <option value="Консультация">Консультация</option>
+                <option value="Подача документов">Подача документов</option>
+            </select>
+            <select name="queue_type" required>
+                <option disabled selected>Выберите:</option>
+                <option value="Долговременная запись">Запись по времени</option>
+                <option value="Живая очередь">Живая очередь</option>
+            </select>
+            <button type="submit">Записаться</button>
+        </form>
+    </div>
+    <img src="/static/wait33.png" alt="wait logo" class="bottom-center-logo">
+</body>
+<script src="https://unpkg.com/imask"></script>
+<script> 
+    var element = document.getElementById('phone');
+    var maskOptions = {
+        mask: '+7(000)000-00-00',
+        lazy: false
+    } 
+    var mask = new IMask(element, maskOptions);
+
+</script>
+
+</html>

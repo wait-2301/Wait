@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль сотрудника</title>
+    <script src="https://unpkg.com/imask"></script>
+
+    <style>
+        /* Весь ваш предыдущий CSS */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('static/background.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .left-bar {
+            width: 60px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #FFFFFF;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-bar a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            width: 60%;
+            height: 500px;
+            max-width: 900px;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        /* Верхний блок */
+        .profile-header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .profile-left-top {
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+        }
+
+        .profile-left-top .profile-item {
+            font-family: "Merriweather Sans", sans-serif;
+            color: #000;
+        }
+
+        .profile-left-top .profile-item:first-child {
+            font-size: 28px;
+            font-weight: 400;
+        }
+
+        .profile-left-top .profile-item:last-child {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            color: #ADA7A7;
+        }
+
+        .profile-right-top {
+            text-align: right;
+        }
+
+        .profile-right-top .greeting {
+            color: #3E435D;
+            font-family: "Merriweather Sans", sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .profile-right-top .date {
+            color: #ADA7A7;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        /* Форма */
+        .form-section {
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            width: 48%;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            font-weight: 400;
+            font-family: 'Poppins', sans-serif;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color: #000;
+            background-color: #F5F5F5;
+            outline: none;
+        }
+
+        .form-group input:disabled {
+            background-color: #F0F0F0;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 20px; /* Отступ между кнопками */
+            margin-top: 20px;
+        }
+        .edit-button {
+            background-color: #7095C6;
+            color: #FFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .edit-button:hover {
+            background-color: #5A7BB5;
+        }
+        /* Модальное окно */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            font-family: "Merriweather Sans", sans-serif;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .close {
+            font-size: 20px;
+            color: #000;
+            cursor: pointer;
+            float: right;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+
+        form label {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .row {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        }
+
+        .row input[type="text"],
+        .row input[type="password"] {
+            width: 100%;
+            max-width: 300px; /* Ширина поля */
+            padding: 10px; /* Внутренний отступ */
+            border: 1px solid #ddd; /* Рамка */
+            border-radius: 8px; /* Скругление углов */
+            font-size: 16px; /* Размер текста */
+            font-family: 'Poppins', sans-serif; /* Шрифт */
+            font-weight: 400;
+            color: #000; /* Цвет текста */
+            background-color: #F5F5F5; /* Цвет фона */
+            outline: none; /* Убираем стандартное выделение */
+        }
+
+        .row input[type="text"]:focus,
+        .row input[type="password"]:focus {
+            border-color: #7095C6; /* Цвет рамки при фокусе */
+            background-color: #fff; /* Цвет фона при фокусе */
+            box-shadow: 0 0 5px rgba(112, 149, 198, 0.5); /* Тень при фокусе */
+        }
+
+        form button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #7095C6;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Левая панель -->
+    <div class="left-bar">
+        <a href="/management"> <img src="/static/icon1.png" alt="Иконка 1" style="width: 30px; height: 30px;"></a>
+        <a href="/admin"><img src="/static/icon2.png" alt="Иконка 2" style="width: 30px; height: 30px;"></a>
+        <a href="/archive"><img src="/static/icon3.png" alt="Иконка 3" style="width: 30px; height: 30px;"></a>
+        <a href="/profile"><img src="/static/icon4.png" alt="Иконка 3" style="width: 30px; height: 30px;"></a>
+    </div>
+
+    <!-- Центральный контейнер -->
+    <div class="profile-container">
+        <!-- Верхний блок -->
+        <div class="profile-header-wrapper">
+            <div class="profile-left-top">
+                <div class="profile-item">{{ employee.first_name }} {{ employee.last_name }}</div>
+                <div class="profile-item"> {{ employee.table_number }}</div>
+            </div>
+            <div class="profile-right-top">
+                <div class="greeting">Здравствуйте, {{ employee.first_name }}</div>
+                <div class="date" id="current-date"></div>
+
+            </div>
+        </div>
+
+        <!-- Форма -->
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Имя</label>
+                    <input type="text" id="name" value="{{ employee.first_name }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="surname">Фамилия</label>
+                    <input type="text" id="surname" value="{{ employee.last_name }}" disabled>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="patronymic">Отчество</label>
+                    <input type="text" id="patronymic" value="{{ employee.patronymic }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="position">Должность</label>
+                    <input type="text" id="position" value="{{ employee.position }}" disabled>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <!-- Кнопка для редактирования -->
+            <button class="edit-button" id="edit-button">Редактировать</button>
+
+            <!-- Кнопка для регистрации нового менеджера -->
+            {% if employee.position == "Администратор" %}
+            <button class="edit-button" id="register-manager-button">Зарегистрировать нового менеджера</button>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-modal">&times;</span>
+            <h3>Зарегистрировать нового менеджера</h3>
+            <form id="register-manager-form">
+                <label for="phone">Номер телефона:</label>
+                <div class="row">
+                    <input type="text" id="phone" placeholder="Номер телефона">
+                </div>
+                <label for="password">Пароль:</label>
+                <div class="row">
+                    <input
+                        type="password"
+                        id="password"
+                        required
+                        placeholder="Пароль">
+                </div>                
+                <button type="submit">Зарегистрировать</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        // Кнопка "Редактировать"
+        const editButton = document.getElementById('edit-button');
+        const inputs = document.querySelectorAll('#name, #surname, #patronymic, #position');
+
+        editButton.addEventListener('click', () => {
+            const isEditing = editButton.textContent === 'Сохранить';
+
+            // Переключение состояния полей
+            inputs.forEach(input => {
+                input.disabled = isEditing; 
+            });
+
+            // Переключение текста кнопки
+            editButton.textContent = isEditing ? 'Редактировать' : 'Сохранить';
+        });
+
+        const registerButton = document.getElementById('register-manager-button');
+        const modal = document.getElementById('modal');
+        const closeModal = document.getElementById('close-modal');
+        const form = document.getElementById('register-manager-form');
+
+        if (registerButton) {
+            registerButton.addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+        }
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/profile/register_manager', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ phone, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Менеджер успешно зарегистрирован!');
+                modal.style.display = 'none';
+                form.reset();
+            } else {
+                alert(`Ошибка: ${result.error}`);
+            }
+        });
+
+    const daysOfWeek = [
+        "Воскресенье", "Понедельник", "Вторник", "Среда",
+        "Четверг", "Пятница", "Суббота"
+    ];
+
+    const months = [
+        "Января", "Февраля", "Марта", "Апреля", "Мая", "Июня",
+        "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря"
+    ];
+
+    const today = new Date();
+    const dayOfWeek = daysOfWeek[today.getDay()];
+    const day = today.getDate();
+    const month = months[today.getMonth()];
+    const year = today.getFullYear();
+
+    const formattedDate = `${dayOfWeek}, ${day} ${month} ${year}`;
+    document.getElementById("current-date").textContent = formattedDate;
+
+</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var element = document.getElementById('phone'); // Поле ввода
+            var maskOptions = {
+                mask: '+7(000)000-00-00',
+                lazy: false // Маска всегда видна
+            };
+            var mask = new IMask(element, maskOptions); // Применение маски
+        });
+    </script>
+</body>
+</html>

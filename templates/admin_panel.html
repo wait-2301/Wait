@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Администрация</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: 'Mulish', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .left-bar {
+            width: 60px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #FFFFFF;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .left-bar a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .outer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 170px;
+            width: 95%;
+            height: 90%;
+        }
+
+        /* Левый контейнер */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 28%;
+            height: 90%;
+            border-radius: 8px;
+            position: relative;
+            margin-left: 100px;
+            padding-top: 20px; /* Отступ сверху */
+        }
+
+        .main-container .manager-name {
+            color: #5C5353;
+            font-family: Mulish;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 50px; /* 250% */
+            letter-spacing: 0.2px;
+            margin-bottom: 10px;
+        }
+
+        .main-container .number {
+            font-size: 50px;
+            font-weight: 900;
+            color: #5C5353;
+        }
+
+        .main-container .status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 125px;
+            height: 30px;
+            padding: 2px 8px;
+            gap: 10px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            color: #6BD084; /* Зелёный текст по умолчанию */
+            background-color: #ECFFEE; /* Светло-зелёный фон по умолчанию */
+        }
+
+        /* Фоны для других статусов */
+        .main-container .status.busy {
+            color: #FFBF00;
+            background-color: #FAF8D9; /* Жёлтый фон */
+        }
+
+        .main-container .status.unavailable {
+            color: #C4C4C4;
+            background-color: #ECECEC; /* Серый фон */
+        }
+        .main-container .timer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-family: 'Mulish', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #6BD084; /* Зелёный текст */
+        }
+
+        .main-container .timer-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            flex-shrink: 0;
+        }
+
+
+        .main-container .info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%; /* Растягивается на весь доступный контейнер */
+            height: 150px;
+            padding: 2px 8px;
+            gap: 10px;
+            flex-shrink: 0;
+            background-color: #F5F5F5; /* Светлый фон */
+            border-radius: 8px;
+            color: #252733;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0; /* Отступ сверху и снизу */
+            box-sizing: border-box; /* Учитывает padding в ширину */
+        }
+
+        /* Правый контейнер */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            height: 90%;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .list-container h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding-left: 20px;
+            color: #9FA2B4;
+        }
+
+        .list-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .list-container li {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Статус теперь справа */
+        }
+
+        .manager-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-wrapper {
+            margin-right: 10px;
+        }
+
+        .manager-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .manager-name {
+            font-weight: 600;
+            color: #252733;
+        }
+
+        .manager-table {
+            font-size: 14px;
+            color: #9FA2B4;
+        }
+
+        .status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 125px;
+            height: 30px;
+            padding: 2px 8px;
+            gap: 10px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .status.available {
+            background-color: #ECFFEE; /* Доступен */
+            color: #6BD084;
+        }
+
+        .status.busy {
+            background-color: #FAF8D9; /* В процессе */
+            color: #FFBF00;
+        }
+
+        .status.unavailable {
+            background-color: #ECECEC; /* Не доступен */
+            color: #C4C4C4;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Левая панель -->
+    <div class="left-bar">
+        <a href="/management"><img src="/static/icon1.png" alt="Иконка 1" style="width: 30px; height: 30px;"></a>
+        <a href="/admin"><img src="/static/icon2.png" alt="Иконка 2" style="width: 30px; height: 30px;"></a>
+        <a href="/archive"><img src="/static/icon3.png" alt="Иконка 3" style="width: 30px; height: 30px;"></a>
+        <a href="/profile"><img src="/static/icon4.png" alt="Иконка 4" style="width: 30px; height: 30px;"></a>
+    </div>
+
+    <!-- Контейнеры -->
+    <div class="outer-container">
+        <!-- Левый контейнер -->
+        <div class="main-container">
+            <div class="status" id="manager-status">Доступен</div>
+            <div class="number" id="manager-table">СТОЛ 1</div>
+            <div class="timer">
+                <img src="/static/time.png" alt="Секундомер" class="timer-icon">
+                <span id="timer-value">00:00</span>
+            </div>
+            <div class="manager-name" id="manager-name">Кумисбек Ариана</div>
+            <div class="info" id="manager-info">Ждем клиента...</div>
+        </div>
+
+        <!-- Правый контейнер -->
+        <div class="list-container">
+            <h3>МЕНЕДЖЕРЫ</h3>
+            <ul id="manager-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        async function fetchManagers() {
+            const response = await fetch('/admin/managers');
+            const managers = await response.json();
+            const listContainer = document.getElementById('manager-list');
+            listContainer.innerHTML = '';
+
+            managers.forEach((manager, index) => {
+                const statusClass = manager.status === 'Доступен' ? 'available'
+                                    : manager.status === 'В процессе' ? 'busy'
+                                    : 'unavailable';
+
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <label class="manager-row">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="manager" onclick="selectManager(${index})">
+                        </div>
+                        <div class="manager-info">
+                            <div class="manager-name">${manager.name}</div>
+                            <div class="manager-table">${manager.table}</div>
+                        </div>
+                    </label>
+                    <span class="status ${statusClass}">${manager.status}</span>
+                `;
+                listContainer.appendChild(li);
+            });
+        }
+
+        async function selectManager(index) {
+            const response = await fetch('/admin/managers');
+            const managers = await response.json();
+            const selectedManager = managers[index];
+
+            document.getElementById('manager-name').textContent = selectedManager.name;
+            document.getElementById('manager-table').textContent = selectedManager.table;
+
+            const managerStatus = document.getElementById('manager-status');
+            const managerInfo = document.getElementById('manager-info');
+
+            // Сбрасываем старые классы статуса
+            managerStatus.classList.remove('available', 'busy', 'unavailable');
+
+            // Добавляем новый класс и устанавливаем текст
+            if (selectedManager.status === 'Доступен') {
+                managerStatus.textContent = selectedManager.status;
+                managerStatus.classList.add('available');
+                managerInfo.textContent = 'Ждем клиента...';
+            } else if (selectedManager.status === 'Не доступен') {
+                managerStatus.textContent = selectedManager.status;
+                managerStatus.classList.add('unavailable');
+                managerInfo.textContent = 'Оператор не в сети';
+            } else if (selectedManager.status === 'В процессе') {
+                managerStatus.textContent = selectedManager.status;
+                managerStatus.classList.add('busy');
+                managerInfo.textContent = 'Оператор занят...';
+            }
+        }
+
+        setInterval(fetchManagers, 60000);
+        fetchManagers();
+
+    </script>
+</body>
+</html>
